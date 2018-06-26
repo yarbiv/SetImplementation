@@ -1,0 +1,128 @@
+#include "tuple.h"
+#include "set.h"
+#include "invariant.h"
+#include <iostream>
+#include <limits.h>   // needed for INT_MIN
+
+// Set up an error set to be returned as necessary
+const Set emptySet(0,(int*)0);
+const Set errorSet(-1,(int*)0);
+
+bool Set::isEmpty() const {
+  return _numElements == 0;
+}
+
+bool Set::isError() const {
+  return _numElements == -1;
+}
+
+int Set::cardinality() const {
+  return 0;
+}
+
+Set Set::union_(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::intersection(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::difference(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::select(predicate* p) const {
+  return emptySet;
+}
+
+Set Set::project(const int numItems, const int items[]) const {
+  return emptySet;
+}
+
+Set Set::cartesian(const Set& s) const {
+  return emptySet;
+}
+
+void Set::operator=(const Set& s) {
+}
+
+Set::Set() {
+  _numElements = 0;
+  _tupleArraySize = 0;
+  _pTuples = NULL;
+}
+
+Set::Set(const Set& s) {
+  _numElements = s._numElements;
+  _tupleArraySize = s._tupleArraySize;
+  _pTuples = new Tuple[50];
+  for (int i = 0; i < _numElements; i++) {
+    _pTuples[i] = s._pTuples[i];
+  }
+}
+
+Set::Set(const int numElements, const int data[]) {
+
+  _numElements = numElements;
+  _tupleArraySize = 50;
+  if (_numElements < 0) {
+    _pTuples = NULL;
+  }
+
+  //remove duplicates from array
+  //the following block copies data[] and then removes all of its repeated elements.
+  int copy[numElements];
+  for (int i = 0; i < numElements; i++) {
+    copy[i] = data[i];
+  }
+  int *current, *end = copy + numElements - 1;
+
+  //int *ptr = copy;
+
+  for ( current = copy + 1; copy < end; copy++, current = copy+1 ) {
+    while (current <= end)
+    {
+      if (*current == *copy) {
+        *current = *end--;
+      } else {
+        current++;
+      }
+    }
+  }
+  //this is the end of the block which copied data and removed all repeated elements.
+
+  _pTuples = new Tuple[_tupleArraySize]; //might have to add Tuple* before _pTuples
+  for (int i = 0; i < numElements; i++) {
+    Tuple temp(copy[i]);
+    _pTuples[i] = temp;
+  }
+
+} //NEED to fix dupe handling!
+
+Set::Set(const int numElements, const Tuple tuples[]) { //add dupe handling
+  _numElements = numElements;
+  _tupleArraySize = 50;
+  _pTuples = new Tuple[_tupleArraySize];
+  for (int i = 0; i < numElements; i++) {
+    _pTuples[i] = tuples[i];
+  }
+}
+
+Set::~Set() {
+  delete[] _pTuples;
+}
+
+std::ostream& operator<<(std::ostream& os, const Set& s) {
+  std::cout << "{";
+  if (s._numElements == -1) {
+    os << "This set has size -1: breaking function.";
+    return os;
+  }
+  for (int i = 0; i < s._numElements; i++) { //loops through tuples
+    os << s._pTuples[i];
+    if (i+1 < s._numElements) os << ","; //adds comma unless the next i element is the last element
+  }
+  os << "}";
+  return os;
+}

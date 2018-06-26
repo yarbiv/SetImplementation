@@ -1,0 +1,82 @@
+#include "tuple.h"
+#include "set.h"
+#include "invariant.h"
+#include <iostream>
+#include <limits.h>   // needed for INT_MIN
+
+// Set up an error set to be returned as necessary
+const Set emptySet(0,(int*)0);
+const Set errorSet(-1,(int*)0);
+
+bool Set::isEmpty() const {
+  return _numElements == 0;
+}
+
+bool Set::isError() const {
+  return _numElements == -1;
+}
+
+int Set::cardinality() const {
+  return 0;
+}
+
+Set Set::union_(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::intersection(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::difference(const Set& s) const {
+  return emptySet;
+}
+
+Set Set::select(predicate* p) const {
+  return emptySet;
+}
+
+Set Set::project(const int numItems, const int items[]) const {
+  return emptySet;
+}
+
+Set Set::cartesian(const Set& s) const {
+  return emptySet;
+}
+
+void Set::operator=(const Set& s) {
+}
+
+Set::Set() {
+  _numElements = 0;
+  _tupleArraySize = 0;
+  _pTuples = NULL;
+}
+
+Set::Set(const Set& s) {
+  _numElements = s._numElements;
+  _tupleArraySize = s._tupleArraySize;
+  Tuple* _pTuples =  new Tuple;
+  for (int i = 1; i <= _numElements; i++) {
+    _pTuples[i] = s._pTuples[i];
+  }
+}
+
+Set::Set(const int numElements, const int data[]) {
+  _numElements = numElements;
+  Tuple** _pTuples = new Tuple[numElements][1];
+  for (int i = 1; i <= numElements; i++) {
+    _pTuples[i-1][1] = data[i];
+  }
+  //Idea is to create a big tuple of tuples. Each tuple in the big tuple contains a single element
+  //from data[]. eg: data[1,2,3] => tuple[tuple[1],tuple[2],tuple[3]]
+}
+
+Set::Set(const int numElements, const Tuple tuples[]) {
+}
+
+Set::~Set() {
+}
+
+std::ostream& operator<<(std::ostream& os, const Set& s) {
+}
