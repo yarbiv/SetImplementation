@@ -1,3 +1,3 @@
 # SetImplementation
 
-Class implementation of logical sets
+A school project. Class implementation of logical sets: tuple.cpp was given.
